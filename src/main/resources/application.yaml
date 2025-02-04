@@ -1,0 +1,10 @@
+micronaut:
+  application:
+    name: redisson-cache-issue
+redisson:
+  protocol: resp3
+  caches:
+    my-cache:
+      expire-after-write: 10m
+    my-cache-async:
+      expire-after-write: 10m
