@@ -2,17 +2,13 @@ package org.example;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.PropertySource;
-import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
-
-import jakarta.inject.Inject;
-import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
@@ -30,9 +26,6 @@ class RedissonCacheIssueTest {
     static GenericContainer<?> redis = new GenericContainer<>("redis/redis-stack:7.4.0-v0")
             .withExposedPorts(6379)
             .waitingFor(Wait.forLogMessage(".*Ready to accept connections.*\\n", 1));
-
-//    @Inject
-//    TestCache testCache;
 
 
     @BeforeAll
