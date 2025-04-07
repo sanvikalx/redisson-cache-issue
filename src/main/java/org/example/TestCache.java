@@ -19,4 +19,11 @@ public class TestCache {
     public Mono<String> getMyValueSync(final String arg) {
         return Mono.defer(() -> Mono.just(arg + counter.incrementAndGet()));
     }
+
+    @Cacheable(cacheNames = {"obj-cache-async"}, parameters = {"arg"})
+    public Mono<TestObject> getObjectSync(final String arg) {
+        final TestObject t = new TestObject();
+        t.setText(arg + counter.incrementAndGet());
+        return Mono.defer(() -> Mono.just(t));
+    }
 }

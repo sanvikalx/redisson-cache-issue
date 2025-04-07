@@ -3,8 +3,8 @@ package org.example;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import java.time.Duration;
 import java.util.Map;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +33,8 @@ class RedissonCacheIssueTest {
         context = ApplicationContext.run(PropertySource.of(
                 "test", Map.of("redis.host", redis.getContainerIpAddress(), "redis.port",
                         redis.getMappedPort(REDIS_PORT),
-                        "redisson.singleServerConfig.address", "redis://" + redis.getHost() + ":" + redis.getMappedPort(REDIS_PORT))
+                        "redisson.singleServerConfig.address",
+                        "redis://" + redis.getHost() + ":" + redis.getMappedPort(REDIS_PORT))
         ));
         redis.start();
     }
@@ -59,13 +60,32 @@ class RedissonCacheIssueTest {
         //not ok
         for (int i = 0; i < 3; i++) {
             if (i == 0) {
-                //first time, result without caching, type String as expected
                 Assertions.assertEquals("a1", testCache.getMyValueSync("a").block());
             } else {
-                //next time, result from cache, and it has become Optional
-                Assertions.assertEquals(Optional.of("a1"), testCache.getMyValueSync("a").block());
+                Assertions.assertEquals("a1", testCache.getMyValueSync("a").block());
             }
         }
+    }
+
+    @Test
+    void testTtlNotAffected() throws InterruptedException {
+        TestCache testCache = context.createBean(TestCache.class);
+        //cache with expire-after-write: 1s
+        Assertions.assertEquals("a1", testCache.getMyValueSync("a").block());
+        long from = System.currentTimeMillis();
+        Thread.sleep(Duration.ofSeconds(5));
+        System.out.println(String.format("I was sleeping %d s, now I'd woke up!", (System.currentTimeMillis() - from) / 1000));
+        //should be a2, but returns a1
+        Assertions.assertEquals("a2", testCache.getMyValueSync("a").block());
+    }
+
+    @Test
+    void testObjectCache() {
+        TestCache testCache = context.createBean(TestCache.class);
+        String first = testCache.getObjectSync("a").block().getText();
+        String second = testCache.getObjectSync("a").block().getText();
+        Assertions.assertEquals("a1", first);
+        Assertions.assertEquals("a1", second);
     }
 
 }

@@ -38,13 +38,13 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>io.micronaut.redis</groupId>
-      <artifactId>micronaut-redis-lettuce</artifactId>
+      <groupId>io.micronaut.cache</groupId>
+      <artifactId>micronaut-cache-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.redisson</groupId>
       <artifactId>redisson-micronaut-40</artifactId>
-      <version>3.42.0</version>
+      <version>3.45.1</version>
     </dependency>
     <dependency>
       <groupId>io.micronaut.reactor</groupId>

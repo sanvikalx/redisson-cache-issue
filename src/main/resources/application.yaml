@@ -4,6 +4,8 @@ micronaut:
 redisson:
   caches:
     my-cache:
-      expire-after-write: 10m
+      expire-after-write: 1s
     my-cache-async:
-      expire-after-write: 10m
+      expire-after-write: 1s
+    obj-cache-async:
+      expire-after-write: 1s
